@@ -1,0 +1,158 @@
+.services {
+  padding: 80px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 72px;
+}
+
+.sectionEyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.sectionTitle {
+  font-family: var(--font-playfair);
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.sectionTitle em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.sectionLink {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.4);
+  padding-bottom: 4px;
+  transition: border-color 0.3s;
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.sectionLink:hover {
+  border-color: var(--gold);
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.serviceCard {
+  background: var(--charcoal);
+  padding: 52px 40px;
+  position: relative;
+  overflow: hidden;
+  /* Fade-up: starts invisible, revealed by IntersectionObserver */
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.45s ease;
+}
+
+/* Added by IntersectionObserver */
+.serviceCard.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.serviceCard::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.serviceCard:hover::before {
+  transform: scaleX(1);
+}
+
+.serviceCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(217, 167, 85, 0.15);
+}
+
+.serviceNum {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-family: var(--font-playfair);
+  font-size: 4rem;
+  color: rgba(201, 169, 110, 0.06);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.serviceIcon {
+  font-size: 2.2rem;
+  margin-bottom: 28px;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.serviceCard:hover .serviceIcon {
+  transform: scale(1.15) rotate(-4deg);
+}
+
+.serviceName {
+  font-family: var(--font-playfair);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.serviceDesc {
+  font-family: var(--font-jost);
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.servicePrice {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+@media (max-width: 900px) {
+  .services {
+    display: none;
+  }
+}

@@ -1,2 +1,18 @@
-# Ignore the old spacing-fixed draft
-glam-fab-spacing-fixed.html
+# Next.js build output
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel
