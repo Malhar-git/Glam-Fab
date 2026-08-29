@@ -1,0 +1,32 @@
+.floatingWa {
+  display: none; /* Hidden by default on desktop */
+}
+
+@media (max-width: 900px) {
+  .floatingWa {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 60px;
+    height: 60px;
+    background-color: #25d366;
+    color: #ffffff;
+    border-radius: 50%;
+    z-index: 999;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    animation: waPulse 3s infinite;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .floatingWa svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .floatingWa:active {
+    transform: scale(0.9);
+  }
+}

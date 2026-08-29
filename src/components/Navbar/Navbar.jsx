@@ -5,7 +5,7 @@ import Image from 'next/image';
 import styles from './Navbar.module.css';
 
 const navLinks = [
-  { href: '#services', label: 'Services' },
+  { href: '#pricelist', label: 'Services' },
   { href: '#gallery', label: 'Gallery' },
   { href: '#testimonials', label: 'Reviews' },
   { href: '#booking', label: 'Book' },

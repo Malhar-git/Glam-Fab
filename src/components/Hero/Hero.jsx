@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 import styles from './Hero.module.css';
 
 const SLIDES = [
@@ -10,22 +12,37 @@ const SLIDES = [
 ];
 
 export default function Hero() {
-  const [current, setCurrent] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 10000, stopOnInteraction: false })]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const next = useCallback(() => setCurrent((p) => (p + 1) % SLIDES.length), []);
-  const prev = useCallback(() => setCurrent((p) => (p - 1 + SLIDES.length) % SLIDES.length), []);
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-  /* Auto-advance every 5 s */
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
   useEffect(() => {
-    const t = setInterval(next, 5000);
-    return () => clearInterval(t);
-  }, [next]);
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+  }, [emblaApi, onSelect]);
 
   return (
     <section className={styles.hero}>
       {/* ── LEFT PANEL ── */}
       <div className={styles.heroLeft}>
-
         <h1 className={styles.heroTitle}>
           Where Beauty
           <em>Comes Alive</em>
@@ -43,60 +60,56 @@ export default function Hero() {
           >
             <span>Book an Appointment</span>
           </button>
-          <a href="#services" className={styles.btnGhost}>
+          <a href="#pricelist" className={styles.btnGhost}>
             Explore Services
           </a>
         </div>
       </div>
 
-      {/* ── RIGHT PANEL — Image Carousel ── */}
-      {/* FIX: overflow: hidden is scoped here — no padding conflict that caused the old overflow bug */}
+      {/* ── RIGHT PANEL — Image Carousel (Embla) ── */}
       <div className={styles.heroRight}>
-        <div className={styles.heroCarousel}>
-          <div
-            className={styles.heroCarouselTrack}
-            style={{ transform: `translateX(-${current * 100}%)` }}
-          >
-            {SLIDES.map((slide) => (
+        <div className={styles.heroCarousel} ref={emblaRef}>
+          <div className={styles.heroCarouselTrack}>
+            {SLIDES.map((slide, index) => (
               <div key={slide.src} className={styles.heroCarouselSlide}>
                 <Image
                   src={slide.src}
                   alt={slide.alt}
                   fill
-                  style={{ objectFit: 'cover', objectPosition: 'center top' }}
-                  priority={slide.src.includes('slideshow-1')}
+                  style={{ objectFit: 'fit', objectPosition: 'center top' }}
+                  priority={index === 0}
                 />
               </div>
             ))}
           </div>
+        </div>
 
-          {/* Prev / Next buttons — hidden on mobile */}
-          <button
-            className={`${styles.heroCarouselBtn} ${styles.prev}`}
-            onClick={prev}
-            aria-label="Previous slide"
-          >
-            ‹
-          </button>
-          <button
-            className={`${styles.heroCarouselBtn} ${styles.next}`}
-            onClick={next}
-            aria-label="Next slide"
-          >
-            ›
-          </button>
+        {/* Prev / Next buttons — absolute positioned over carousel */}
+        <button
+          className={`${styles.heroCarouselBtn} ${styles.prev}`}
+          onClick={scrollPrev}
+          aria-label="Previous slide"
+        >
+          ‹
+        </button>
+        <button
+          className={`${styles.heroCarouselBtn} ${styles.next}`}
+          onClick={scrollNext}
+          aria-label="Next slide"
+        >
+          ›
+        </button>
 
-          {/* Dots */}
-          <div className={styles.heroCarouselDots}>
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                className={`${styles.heroCarouselDot} ${i === current ? styles.active : ''}`}
-                onClick={() => setCurrent(i)}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
+        {/* Dots */}
+        <div className={styles.heroCarouselDots}>
+          {SLIDES.map((_, i) => (
+            <button
+              key={i}
+              className={`${styles.heroCarouselDot} ${i === selectedIndex ? styles.active : ''}`}
+              onClick={() => scrollTo(i)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

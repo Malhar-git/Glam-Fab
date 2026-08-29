@@ -78,13 +78,17 @@
   background: var(--charcoal);
   border: 1px solid rgba(201, 169, 110, 0.3);
   color: var(--cream);
-  padding: 14px 18px;
+  padding: 14px 48px 14px 18px; /* Extra right padding for the icon */
   font-family: var(--font-jost);
   font-size: 0.88rem;
   margin-bottom: 4px;
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9a755' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 16px;
 }
 
 /* Table panel */

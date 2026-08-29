@@ -153,6 +153,9 @@
     padding: 60px 28px;
     gap: 40px;
   }
+  .quickLinksCol {
+    display: none;
+  }
   .footerBottom {
     flex-direction: column;
     gap: 12px;

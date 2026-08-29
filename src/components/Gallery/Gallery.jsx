@@ -3,9 +3,9 @@ import styles from './Gallery.module.css';
 
 const GALLERY = [
   { src: '/assets/images/bridal.jpg',     alt: 'Bridal Makeup at Glam & Fab Salon',       label: 'Bridal Makeup' },
-  { src: '/assets/images/hair-color.jpeg', alt: 'Hair Color service at Glam & Fab Salon',  label: 'Hair Color' },
+  { src: '/assets/images/hair-color.jpg', alt: 'Hair Color service at Glam & Fab Salon',  label: 'Hair Color' },
   { src: '/assets/images/nai.jpeg',        alt: 'Nail Art at Glam & Fab Salon',             label: 'Nail Art' },
-  { src: '/assets/images/skin.jpg',        alt: 'Skin Treatment at Glam & Fab Salon',       label: 'Skin Treatment' },
+  { src: '/assets/images/hair-treatment.jpeg', alt: 'Skin Treatment at Glam & Fab Salon',       label: 'Hair Treatment' },
   { src: '/assets/images/editorial.jpg',   alt: 'Editorial Look at Glam & Fab Salon',       label: 'Editorial Look' },
 ];
 

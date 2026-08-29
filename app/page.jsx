@@ -8,6 +8,7 @@ import Booking from '@/components/Booking/Booking';
 import Testimonials from '@/components/Testimonials/Testimonials';
 import PriceList from '@/components/PriceList/PriceList';
 import Footer from '@/components/Footer/Footer';
+import FloatingWhatsApp from '@/components/FloatingWhatsApp/FloatingWhatsApp';
 
 export default function HomePage() {
   return (
@@ -24,6 +25,7 @@ export default function HomePage() {
         <PriceList />
       </main>
       <Footer />
+      <FloatingWhatsApp />
     </>
   );
 }
