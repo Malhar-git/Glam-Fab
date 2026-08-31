@@ -17,12 +17,12 @@ export default function HomePage() {
       <main>
         <Hero />
         <Marquee />
-        <StatsBar />
-        <Services />
-        <Gallery />
-        <Booking />
-        <Testimonials />
         <PriceList />
+        <Booking />
+        <Gallery />
+        <StatsBar />
+        <Testimonials />
+        <Services />
       </main>
       <Footer />
       <FloatingWhatsApp />

@@ -9,8 +9,18 @@
 .marquee {
   display: flex;
   gap: 0;
+  width: max-content;
   animation: marquee 24s linear infinite;
   white-space: nowrap;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .marqueeItem {
