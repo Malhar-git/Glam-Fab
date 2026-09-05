@@ -6,23 +6,43 @@
 
 /* ---- Keyframes defined LOCALLY so CSS Modules can resolve them ---- */
 @keyframes heroReveal {
-  0%   { opacity: 0; transform: translateY(28px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 @keyframes ctaPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(217, 167, 85, 0); }
-  50%      { box-shadow: 0 0 14px rgba(217, 167, 85, 0.25); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(217, 167, 85, 0);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(217, 167, 85, 0.25);
+  }
 }
 
 @keyframes waPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(37, 211, 102, 0); }
-  50%      { box-shadow: 0 0 14px rgba(37, 211, 102, 0.3); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(37, 211, 102, 0);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(37, 211, 102, 0.3);
+  }
 }
 
 .hero {
@@ -31,6 +51,14 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   position: relative;
+}
+
+.heroRight {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+  padding: 140px 80px 40px 80px;
 }
 
 /* ── LEFT ── */
@@ -42,8 +70,6 @@
   position: relative;
   z-index: 2;
 }
-
-
 
 .heroTitle {
   font-family: var(--font-playfair);
@@ -103,7 +129,9 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease;
 }
 
 .btnPrimary:hover {
@@ -135,7 +163,7 @@
 }
 
 .btnGhost::after {
-  content: '→';
+  content: "→";
   font-size: 1rem;
   transition: transform 0.3s ease;
   display: inline-block;
@@ -146,14 +174,11 @@
 }
 
 /* ── RIGHT — carousel ── */
-/* KEY FIX: overflow:hidden here, no extra padding that
-   would push content out and cause the overflow bug */
 .heroRight {
   position: relative;
   height: 100vh;
   overflow: hidden;
   z-index: 2;
-  padding: 140px 80px 40px 80px;
 }
 
 .heroCarousel {
@@ -178,8 +203,19 @@
   overflow: hidden;
 }
 
+/* Video fills the slide exactly like Next/Image fill does */
+.heroCarouselVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+}
+
 .heroCarouselSlide::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -210,7 +246,9 @@
   border: 1.5px solid rgba(217, 167, 85, 0.6);
   cursor: pointer;
   padding: 0;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease;
 }
 
 .heroCarouselDot.active {
@@ -238,7 +276,11 @@
   line-height: 1;
   cursor: pointer;
   backdrop-filter: blur(6px);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
 }
 
 .heroCarouselBtn:hover {
@@ -248,8 +290,12 @@
   color: var(--deep);
 }
 
-.prev { left: 18px; }
-.next { right: 18px; }
+.prev {
+  left: 18px;
+}
+.next {
+  right: 18px;
+}
 
 /* ── Mobile ── */
 @media (max-width: 900px) {
@@ -263,12 +309,32 @@
     order: 1;
   }
 
+  /* Shared mobile base for heroRight */
   .heroRight {
     order: 2;
     width: 100%;
-    height: 100vw;
-    min-height: 300px;
+    height: auto;
     padding: 0;
+    /* Smooth height transition when switching between video & image slides */
+    transition: aspect-ratio 0.4s ease;
+  }
+
+  /* Video slide: tall portrait shape (9:16) — exactly like viewing a reel */
+  .heroRightVideo {
+    aspect-ratio: 9 / 16;
+    min-height: 500px;
+  }
+
+  /* Image slides: compact landscape shape (4:3) — no stretching */
+  .heroRightImage {
+    aspect-ratio: 1;
+    min-height: 260px;
+  }
+
+  /* Image object-fit on mobile stays cover so they fill without distortion */
+  .heroRightImage .heroCarouselVideo {
+    object-fit: cover;
+    object-position: center center;
   }
 
   .heroCarouselBtn {
