@@ -56,6 +56,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer; /* Added for popup interaction */
 }
 
 .galleryItem:first-child {
@@ -104,6 +105,170 @@
   opacity: 1;
 }
 
+
+/* ── LIGHTBOX POPUP STYLES ── */
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  /* More transparent background to see the page beneath */
+  background: rgba(10, 8, 5, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  /* Hardware acceleration to prevent lag */
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.lightboxContent {
+  /* Minimal floating look: completely transparent background */
+  background: transparent;
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  animation: fadeScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeScale {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  color: var(--cream);
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.closeBtn:hover {
+  transform: scale(1.1);
+  color: var(--gold);
+}
+
+.lightboxHeader {
+  padding: 0 0 30px 0;
+  text-align: center;
+}
+
+.lightboxHeader h3 {
+  font-family: var(--font-playfair);
+  font-size: 2.5rem;
+  color: var(--cream);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.lightboxGrid {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 3px;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Minimal scrollbar */
+.lightboxGrid::-webkit-scrollbar {
+  width: 4px;
+}
+.lightboxGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.lightboxGrid::-webkit-scrollbar-thumb {
+  background: rgba(253, 248, 242, 0.2);
+  border-radius: 4px;
+}
+
+.placeholderItem {
+  position: relative;
+  overflow: hidden;
+  background: rgba(253, 248, 242, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  border: 1px solid rgba(10, 8, 5, 0.2);
+  min-height: 0;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.placeholderItem:hover {
+  opacity: 0.8;
+}
+
+.placeholderText {
+  color: var(--cream);
+  font-size: 0.9rem;
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── FULLSCREEN ZOOM OVERLAY ── */
+.zoomOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 4, 2, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeScale 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.zoomImageWrap {
+  position: relative;
+  width: 90vw;
+  height: 90vh;
+}
+
+.zoomCloseBtn {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  border: none;
+  background: transparent;
+  color: var(--cream);
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.zoomCloseBtn:hover {
+  transform: scale(1.1);
+  color: var(--gold);
+}
+
+/* Mobile responsive */
 @media (max-width: 900px) {
   .gallery {
     padding: 60px 28px;
@@ -117,5 +282,35 @@
   }
   .galleryItem:first-child {
     grid-row: auto;
+  }
+
+  /* Full screen popup on mobile */
+  .lightboxOverlay {
+    padding: 0;
+  }
+  
+  .lightboxContent {
+    height: 100dvh;
+    padding-top: 60px; /* Space for absolute close button */
+  }
+
+  .lightboxHeader {
+    padding: 0 20px 20px;
+  }
+  
+  .lightboxHeader h3 {
+    font-size: 2rem;
+  }
+
+  .closeBtn {
+    top: 10px;
+    right: 10px;
+  }
+
+  .lightboxGrid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: unset;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
