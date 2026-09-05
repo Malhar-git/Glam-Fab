@@ -18,8 +18,8 @@ export default function HomePage() {
         <Hero />
         <Marquee />
         <PriceList />
-        <Booking />
         <Gallery />
+        <Booking />
         <StatsBar />
         <Testimonials />
         <Services />
