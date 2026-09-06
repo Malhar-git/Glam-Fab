@@ -25,7 +25,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link href="#" className={styles.navLogo}>
         <Image
-          src="/logo.png"
+          src="/logo.webp"
           alt="Glam & Fab Salon logo"
           width={68}
           height={68}

@@ -12,19 +12,19 @@ const SLIDES = [
     type: "video",
   },
   {
-    src: "/assets/images/slideshow-2.png",
+    src: "/assets/images/slideshow-2.webp",
     alt: "Glam & Fab Salon — luxury experience",
   },
   {
-    src: "/assets/images/slideshow-3.png",
+    src: "/assets/images/slideshow-3.webp",
     alt: "Glam & Fab Salon — hair styling",
   },
   {
-    src: "/assets/images/slideshow-4.png",
+    src: "/assets/images/slideshow-4.webp",
     alt: "Glam & Fab Salon — bridal makeup",
   },
   {
-    src: "/assets/images/slideshow-5.jpeg",
+    src: "/assets/images/slideshow-5.webp",
     alt: "One Stop solution for you Hair Problems",
   },
 ];

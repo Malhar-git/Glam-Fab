@@ -5,59 +5,65 @@ import styles from "./Gallery.module.css";
 
 const GALLERY = [
   {
-    src: "/assets/images/bridal.jpg",
+    src: "/assets/images/bridal.webp",
     alt: "Bridal Makeup at Glam & Fab Salon",
     label: "Bridal Makeup",
   },
   {
-    src: "/assets/images/gallery/hair-color/7.png",
+    src: "/assets/images/gallery/hair-color/7.webp",
     alt: "Hair Color service at Glam & Fab Salon",
     label: "Hair Color",
   },
   {
-    src: "/assets/images/nai.jpeg",
+    src: "/assets/images/nai.webp",
     alt: "Nail Art at Glam & Fab Salon",
     label: "Nail Art",
   },
   {
-    src: "/assets/images/hair-treatment.jpeg",
+    src: "/assets/images/hair-treatment.webp",
     alt: "Skin Treatment at Glam & Fab Salon",
     label: "Hair Treatment",
   },
   {
-    src: "/assets/images/gallery/other-services/other-services-2.png",
+    src: "/assets/images/gallery/other-services/other-services-2.webp",
     alt: "Editorial Look at Glam & Fab Salon",
     label: "Other Services",
   },
 ];
 
 const CATEGORY_IMAGES = {
+  "Bridal Makeup": [
+    { src: "/assets/images/gallery/bridal/1.webp", alt: "Bridal Makeup 1" },
+    { src: "/assets/images/gallery/bridal/2.webp", alt: "Bridal Makeup 2" },
+    { src: "/assets/images/gallery/bridal/3.webp", alt: "Bridal Makeup 3" },
+    { src: "/assets/images/gallery/bridal/4.webp", alt: "Bridal Makeup 4" },
+  ],
   "Hair Color": [
-    { src: "/assets/images/gallery/hair-color/1.png", alt: "Hair Color 1" },
-    { src: "/assets/images/gallery/hair-color/2.png", alt: "Hair Color 2" },
-    { src: "/assets/images/gallery/hair-color/3.png", alt: "Hair Color 3" },
-    { src: "/assets/images/gallery/hair-color/4.png", alt: "Hair Color 4" },
-    { src: "/assets/images/gallery/hair-color/6.png", alt: "Hair Color 6" },
-    { src: "/assets/images/gallery/hair-color/7.png", alt: "Hair Color 7" },
-    { src: "/assets/images/gallery/hair-color/8.png", alt: "Hair Color 8" },
-    { src: "/assets/images/gallery/hair-color/9.png", alt: "Hair Color 9" },
-    { src: "/assets/images/gallery/hair-color/10.png", alt: "Hair Color 10" },
+    { src: "/assets/images/gallery/hair-color/1.webp", alt: "Hair Color 1" },
+    { src: "/assets/images/gallery/hair-color/2.webp", alt: "Hair Color 2" },
+    { src: "/assets/images/gallery/hair-color/3.webp", alt: "Hair Color 3" },
+    { src: "/assets/images/gallery/hair-color/4.webp", alt: "Hair Color 4" },
+    { src: "/assets/images/gallery/hair-color/6.webp", alt: "Hair Color 6" },
+    { src: "/assets/images/gallery/hair-color/7.webp", alt: "Hair Color 7" },
+    { src: "/assets/images/gallery/hair-color/8.webp", alt: "Hair Color 8" },
+    { src: "/assets/images/gallery/hair-color/9.webp", alt: "Hair Color 9" },
+    { src: "/assets/images/gallery/hair-color/10.webp", alt: "Hair Color 10" },
   ],
   "Hair Treatment": [
-    { src: "/assets/images/gallery/hair-treatment/1.png", alt: "Hair Treatment 1" },
-    { src: "/assets/images/gallery/hair-treatment/2.png", alt: "Hair Treatment 2" },
-    { src: "/assets/images/gallery/hair-treatment/3(1).png", alt: "Hair Treatment 3" },
-    { src: "/assets/images/gallery/hair-treatment/4.png", alt: "Hair Treatment 4" },
-    { src: "/assets/images/gallery/hair-treatment/5.png", alt: "Hair Treatment 5" },
-    { src: "/assets/images/gallery/hair-treatment/6.png", alt: "Hair Treatment 6" },
+    { src: "/assets/images/gallery/hair-treatment/1.webp", alt: "Hair Treatment 1" },
+    { src: "/assets/images/gallery/hair-treatment/2.webp", alt: "Hair Treatment 2" },
+    { src: "/assets/images/gallery/hair-treatment/3(1).webp", alt: "Hair Treatment 3" },
+    { src: "/assets/images/gallery/hair-treatment/4.webp", alt: "Hair Treatment 4" },
+    { src: "/assets/images/gallery/hair-treatment/5.webp", alt: "Hair Treatment 5" },
+    { src: "/assets/images/gallery/hair-treatment/6.webp", alt: "Hair Treatment 6" },
   ],
   "Nail Art": [
-    { src: "/assets/images/gallery/nails/1.png", alt: "Nail Art 1" },
-    { src: "/assets/images/gallery/nails/2.png", alt: "Nail Art 2" },
+    { src: "/assets/images/gallery/nails/1.webp", alt: "Nail Art 1" },
+    { src: "/assets/images/gallery/nails/2.webp", alt: "Nail Art 2" },
   ],
   "Other Services": [
-    { src: "/assets/images/gallery/other-services/other-services-1.png", alt: "Other Services 1" },
-    { src: "/assets/images/gallery/other-services/other-services-2.png", alt: "Other Services 2" },
+    { src: "/assets/images/gallery/other-services/other-services-1.webp", alt: "Other Services 1" },
+    { src: "/assets/images/gallery/other-services/other-services-2.webp", alt: "Other Services 2" },
   ],
 };
 
@@ -110,6 +116,20 @@ export default function Gallery() {
       setSelectedImage(null);
     }
   };
+
+  // Esc key: close zoom first, then lightbox
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      if (selectedImage) {
+        setSelectedImage(null);
+      } else if (selectedCategory) {
+        setSelectedCategory(null);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, selectedCategory]);
 
   useEffect(() => {
     if (selectedCategory) {

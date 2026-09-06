@@ -50,7 +50,7 @@ export default function Footer() {
         <div>
           <div className={styles.footerBrand}>
             <Image
-              src="/logo.png"
+              src="/logo.webp"
               alt="Glam & Fab logo"
               width={64}
               height={64}
