@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // App router is the default in Next.js 14 — no extra config needed
+  // App router is the default in Next.js 14 - no extra config needed
   // Images from /public are served at root path automatically
+  output: "export",
+
   images: {
-    // All images are local (in /public). No remote domains needed.
-    // Uncomment and add if you ever use external CDN:
-    // domains: [],
+    // Static export on Hostinger has no image optimization server,
+    // so we ship the original images directly.
+    unoptimized: true,
   },
 
   // Make sure CSS Modules work (they do by default in Next.js)

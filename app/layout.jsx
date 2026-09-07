@@ -2,6 +2,7 @@ import { Playfair_Display, Jost } from 'next/font/google';
 import '@/styles/globals.css';
 
 export const metadata = {
+  metadataBase: new URL('https://glamfab.in'),
   title: 'Glam & Fab Salon – Luxury Unisex Salon',
   description:
     'Glam & Fab Salon — Award-winning luxury unisex salon. Book bridal makeup, hair styling, nail art, skin treatments & more.',
@@ -10,8 +11,8 @@ export const metadata = {
     title: 'Glam & Fab Salon – Luxury Unisex Salon',
     description:
       'Award-winning luxury salon. Bridal packages, hair styling, nail art & skin treatments. Book your session today!',
-    images: [{ url: '/assets/images/slideshow-1.png', width: 1200, height: 630 }],
-    url: 'https://glamandfab.in',
+    images: [{ url: '/assets/images/slideshow-2.webp', width: 1200, height: 630 }],
+    url: 'https://glamfab.in',
     siteName: 'Glam & Fab Salon',
     locale: 'en_IN',
   },
@@ -19,7 +20,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Glam & Fab Salon',
     description: 'Luxury unisex salon. Book your transformation today!',
-    images: ['/assets/images/slideshow-1.png'],
+    images: ['/assets/images/slideshow-2.webp'],
   },
 };
 
@@ -43,8 +44,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${playfair.variable} ${jost.variable}`}>
       <head>
         <meta name="theme-color" content="#d9a755" />
-        <link rel="preload" as="image" href="/assets/images/slideshow-1.png" />
-        <link rel="preload" as="image" href="/assets/images/slideshow-2.jpeg" />
+        <link rel="preload" as="image" href="/assets/images/slideshow-2.webp" />
       </head>
       <body>{children}</body>
     </html>
