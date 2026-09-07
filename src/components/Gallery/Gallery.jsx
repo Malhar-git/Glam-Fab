@@ -50,29 +50,53 @@ const CATEGORY_IMAGES = {
     { src: "/assets/images/gallery/hair-color/10.webp", alt: "Hair Color 10" },
   ],
   "Hair Treatment": [
-    { src: "/assets/images/gallery/hair-treatment/1.webp", alt: "Hair Treatment 1" },
-    { src: "/assets/images/gallery/hair-treatment/2.webp", alt: "Hair Treatment 2" },
-    { src: "/assets/images/gallery/hair-treatment/3(1).webp", alt: "Hair Treatment 3" },
-    { src: "/assets/images/gallery/hair-treatment/4.webp", alt: "Hair Treatment 4" },
-    { src: "/assets/images/gallery/hair-treatment/5.webp", alt: "Hair Treatment 5" },
-    { src: "/assets/images/gallery/hair-treatment/6.webp", alt: "Hair Treatment 6" },
+    {
+      src: "/assets/images/gallery/hair-treatment/1.webp",
+      alt: "Hair Treatment 1",
+    },
+    {
+      src: "/assets/images/gallery/hair-treatment/2.webp",
+      alt: "Hair Treatment 2",
+    },
+    {
+      src: "/assets/images/gallery/hair-treatment/3(1).webp",
+      alt: "Hair Treatment 3",
+    },
+    {
+      src: "/assets/images/gallery/hair-treatment/4.webp",
+      alt: "Hair Treatment 4",
+    },
+    {
+      src: "/assets/images/gallery/hair-treatment/5.webp",
+      alt: "Hair Treatment 5",
+    },
+    {
+      src: "/assets/images/gallery/hair-treatment/6.webp",
+      alt: "Hair Treatment 6",
+    },
   ],
   "Nail Art": [
     { src: "/assets/images/gallery/nails/1.webp", alt: "Nail Art 1" },
     { src: "/assets/images/gallery/nails/2.webp", alt: "Nail Art 2" },
   ],
   "Other Services": [
-    { src: "/assets/images/gallery/other-services/other-services-1.webp", alt: "Other Services 1" },
-    { src: "/assets/images/gallery/other-services/other-services-2.webp", alt: "Other Services 2" },
+    {
+      src: "/assets/images/gallery/other-services/other-services-1.webp",
+      alt: "Other Services 1",
+    },
+    {
+      src: "/assets/images/gallery/other-services/other-services-2.webp",
+      alt: "Other Services 2",
+    },
   ],
 };
 
 // Compute a balanced grid layout based on image count
 function getGridLayout(count) {
   if (count <= 0) return { cols: 1, rows: 1 };
-  if (count <= 3)  return { cols: count, rows: 1 };
+  if (count <= 3) return { cols: count, rows: 1 };
   if (count === 4) return { cols: 2, rows: 2 };
-  if (count <= 6)  return { cols: 3, rows: 2 };
+  if (count <= 6) return { cols: 3, rows: 2 };
   return { cols: 5, rows: 2 }; // 7-10 images -> 5x2
 }
 
@@ -164,7 +188,9 @@ export default function Gallery() {
                 key={item.label}
                 className={styles.galleryItem}
                 data-label={item.label}
-                onClick={hasImages ? () => setSelectedCategory(item.label) : undefined}
+                onClick={
+                  hasImages ? () => setSelectedCategory(item.label) : undefined
+                }
                 style={{ cursor: hasImages ? "pointer" : "default" }}
               >
                 <div className={styles.galleryGlow} />
@@ -173,7 +199,7 @@ export default function Gallery() {
                   alt={item.alt}
                   fill
                   style={{ objectFit: "fill" }}
-                  sizes="(max-width: 900px) 100vw, 33vw"
+                  sizes="(max-width: 900px) 90vw, 33vw"
                 />
               </div>
             );
@@ -204,7 +230,9 @@ export default function Gallery() {
               style={(() => {
                 const images = CATEGORY_IMAGES[selectedCategory] || [];
                 const cols = isMobile
-                  ? images.length === 2 ? 1 : 2
+                  ? images.length === 2
+                    ? 1
+                    : 2
                   : getGridLayout(images.length).cols;
                 const rows = Math.ceil(images.length / cols);
                 return {
@@ -228,7 +256,7 @@ export default function Gallery() {
                       src={img.src}
                       alt={img.alt}
                       fill
-                      style={{ objectFit: isMobile ? "cover" : "contain" }}
+                      style={{ objectFit: "contain" }}
                       sizes="(max-width: 600px) 100vw, 33vw"
                     />
                   </div>
@@ -263,7 +291,7 @@ export default function Gallery() {
               src={selectedImage.src}
               alt={selectedImage.alt}
               fill
-              style={{ objectFit: isMobile ? "cover" : "contain" }}
+              style={{ objectFit: "contain" }}
               sizes="100vw"
             />
           </div>
