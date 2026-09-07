@@ -228,7 +228,7 @@ export default function Gallery() {
                       src={img.src}
                       alt={img.alt}
                       fill
-                      style={{ objectFit: "contain" }}
+                      style={{ objectFit: isMobile ? "cover" : "contain" }}
                       sizes="(max-width: 600px) 100vw, 33vw"
                     />
                   </div>
@@ -263,7 +263,7 @@ export default function Gallery() {
               src={selectedImage.src}
               alt={selectedImage.alt}
               fill
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: isMobile ? "cover" : "contain" }}
               sizes="100vw"
             />
           </div>
