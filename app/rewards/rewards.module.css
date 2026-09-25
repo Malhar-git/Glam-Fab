@@ -1,0 +1,1081 @@
+/* ============================================================
+   Rewards — scoped CSS module
+   Mirrors the home page design language: deep night backdrop,
+   champagne-gold accents, Playfair Display headings, Jost body.
+   ============================================================ */
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(217, 167, 85, 0); }
+  50%      { box-shadow: 0 0 14px rgba(217, 167, 85, 0.25); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeUp {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.page {
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160px 24px 100px;
+}
+
+/* ---- Header ---- */
+.header {
+  text-align: center;
+  animation: fadeUp 0.8s ease both;
+}
+
+.eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.title {
+  font-family: var(--font-playfair);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--cream);
+}
+
+.title em {
+  font-style: italic;
+  background: linear-gradient(
+    90deg,
+    var(--gold-dark) 0%,
+    var(--gold-light) 25%,
+    var(--gold) 50%,
+    var(--gold-light) 75%,
+    var(--gold-dark) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+
+.subtitle {
+  font-family: var(--font-jost);
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 20px auto 0;
+}
+
+/* ---- Buttons ---- */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--gold);
+  color: var(--deep);
+  border: none;
+  padding: 16px 40px;
+  font-family: var(--font-jost);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease;
+  animation: ctaPulse 3s ease-in-out infinite;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(217, 167, 85, 0.3);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnBlock {
+  width: 100%;
+}
+
+/* ---- Logged-out state ---- */
+.loginActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  margin-top: 44px;
+  animation: fadeUp 0.8s ease both 0.3s;
+}
+
+.googleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 16px 36px;
+  font-family: var(--font-jost);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+  animation: ctaPulse 3s ease-in-out infinite;
+}
+
+.googleBtn:hover {
+  background: var(--gold);
+  color: var(--deep);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(217, 167, 85, 0.35);
+}
+
+.googleImg {
+  width: 18px;
+  height: 18px;
+}
+
+.loginNote {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.backLink::before {
+  content: '←';
+  transition: transform 0.3s ease;
+}
+
+.backLink:hover {
+  color: var(--gold);
+}
+
+.backLink:hover::before {
+  transform: translateX(-4px);
+}
+
+/* ---- Loading state ---- */
+.loading {
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(217, 167, 85, 0.25);
+  border-top-color: var(--gold);
+  animation: spin 0.9s linear infinite;
+}
+
+.loadingText {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ---- Rewards card ---- */
+.card {
+  width: 100%;
+  max-width: 620px;
+  background: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  position: relative;
+  margin-top: 48px;
+  animation: fadeUp 0.8s ease both 0.15s;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.cardHead {
+  padding: 52px 40px 40px;
+  text-align: center;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+  position: relative;
+}
+
+.logout {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  background: transparent;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  color: var(--text-muted);
+  font-family: var(--font-jost);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.logout:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ---- Stamp card ---- */
+.stampRow {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+}
+
+.stamp {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--deep);
+  border: 1.5px dashed rgba(201, 169, 110, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.4s, background 0.4s, box-shadow 0.4s, transform 0.4s;
+}
+
+.stampFilled {
+  border-style: solid;
+  border-color: var(--gold);
+  background: rgba(217, 167, 85, 0.12);
+  box-shadow: 0 0 18px rgba(217, 167, 85, 0.25);
+  transform: scale(1.02);
+}
+
+.stampPending {
+  border-style: solid;
+  border-color: var(--gold-light);
+  animation: stampPulse 1.6s ease-in-out infinite;
+}
+
+.stampIcon {
+  width: 28px;
+  height: 28px;
+  fill: var(--gold);
+}
+
+.stampCount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.stampCountNum {
+  font-family: var(--font-playfair);
+  font-size: 3rem;
+  line-height: 1;
+  background: linear-gradient(
+    90deg,
+    var(--gold-dark) 0%,
+    var(--gold-light) 25%,
+    var(--gold) 50%,
+    var(--gold-light) 75%,
+    var(--gold-dark) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+.stampCountLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+@keyframes stampPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(255, 214, 138, 0.2); }
+  50% { box-shadow: 0 0 22px rgba(255, 214, 138, 0.55); }
+}
+
+.cardBody {
+  padding: 40px;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+}
+
+.notice {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--gold-light);
+  line-height: 1.6;
+}
+
+.noticeBanner {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(213, 84, 84, 0.12);
+  border: 1px solid rgba(213, 84, 84, 0.55);
+  border-left: 4px solid #e08c8c;
+  padding: 16px 18px;
+  border-radius: 2px;
+  animation: fadeUp 0.4s ease both;
+}
+
+.noticeBannerIcon {
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.noticeBannerText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.noticeBannerTitle {
+  font-family: var(--font-jost);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #e08c8c;
+}
+
+.noticeBannerBody {
+  font-size: 0.85rem;
+  color: rgba(240, 220, 220, 0.85);
+  line-height: 1.55;
+}
+
+/* Info / scan banner */
+.infoBanner {
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: rgba(217, 167, 85, 0.06);
+  padding: 18px 22px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--cream);
+  opacity: 0.9;
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+
+/* Pending approval banner */
+.pendingBanner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid rgba(255, 214, 138, 0.4);
+  background: rgba(255, 214, 138, 0.07);
+  padding: 20px 22px;
+}
+
+.pendingPulse {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  flex-shrink: 0;
+  animation: stampPulse 1.6s ease-in-out infinite;
+}
+
+.pendingTitle {
+  display: block;
+  font-family: var(--font-playfair);
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+
+.pendingText {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Reward unlocked banner */
+.rewardBanner {
+  border: 1px solid var(--gold);
+  background: linear-gradient(120deg, rgba(217, 167, 85, 0.2), rgba(217, 167, 85, 0.06));
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.rewardTitle {
+  font-family: var(--font-playfair);
+  font-size: 1.5rem;
+  background: linear-gradient(
+    90deg,
+    var(--gold-dark) 0%,
+    var(--gold-light) 25%,
+    var(--gold) 50%,
+    var(--gold-light) 75%,
+    var(--gold-dark) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s linear infinite;
+  margin-bottom: 10px;
+}
+
+.rewardText {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Phone capture */
+.phoneCard {
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: rgba(217, 167, 85, 0.05);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.phoneText {
+  font-size: 0.85rem;
+  color: var(--cream);
+  opacity: 0.85;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.phoneRow {
+  display: flex;
+  gap: 12px;
+}
+
+.phoneRow .input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---- Staff portal ---- */
+.formCard {
+  width: 100%;
+  max-width: 520px;
+  background: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  padding: 40px;
+  margin-top: 48px;
+  position: relative;
+  animation: fadeUp 0.8s ease both 0.15s;
+}
+
+.formCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  background: var(--deep);
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  color: var(--cream);
+  padding: 14px 16px;
+  font-family: var(--font-jost);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(217, 167, 85, 0.15);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d9a755' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+select.input option {
+  background: var(--deep);
+  color: var(--cream);
+}
+
+.formError {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #e08c8c;
+}
+
+.statusSuccess {
+  margin-top: 24px;
+  border: 1px solid rgba(217, 167, 85, 0.4);
+  background: rgba(217, 167, 85, 0.08);
+  color: var(--gold);
+  padding: 16px;
+  text-align: center;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+}
+
+.statusError {
+  margin-top: 24px;
+  border: 1px solid rgba(213, 84, 84, 0.5);
+  background: rgba(213, 84, 84, 0.08);
+  color: #e08c8c;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+}
+
+.statusInline {
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 0.75rem;
+}
+
+.statusBanner {
+  max-width: 680px;
+  width: 100%;
+  text-align: center;
+  margin-top: 36px;
+  font-size: 0.85rem;
+}
+
+/* ---- Staff portal ---- */
+.staffPage {
+  justify-content: flex-start;
+  padding-top: 160px;
+  align-items: center;
+}
+
+.staffHeaderActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.refreshBtn {
+  background: transparent;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  color: var(--text-muted);
+  padding: 10px 22px;
+  font-family: var(--font-jost);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.staffSection {
+  width: 100%;
+  max-width: 680px;
+  margin-top: 48px;
+  position: relative;
+  animation: fadeUp 0.8s ease both 0.15s;
+}
+
+.sectionHead {
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+.badge {
+  background: var(--gold);
+  color: var(--deep);
+  font-size: 0.68rem;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border: 1px dashed rgba(201, 169, 110, 0.25);
+  padding: 24px;
+  text-align: center;
+}
+
+.requestList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.requestItem {
+  background: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.requestInfo {
+  min-width: 0;
+}
+
+.customerName {
+  display: block;
+  font-family: var(--font-playfair);
+  font-size: 1.15rem;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.customerPhone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.phoneIcon {
+  width: 14px;
+  height: 14px;
+  fill: var(--gold);
+  flex-shrink: 0;
+}
+
+.requestMeta {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.requestActions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.approveBtn {
+  background: var(--gold);
+  color: var(--deep);
+  border: none;
+  padding: 12px 22px;
+  font-family: var(--font-jost);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.approveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(217, 167, 85, 0.35);
+}
+
+.approveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rejectBtn {
+  background: transparent;
+  border: 1px solid rgba(213, 84, 84, 0.5);
+  color: #e08c8c;
+  padding: 12px 18px;
+  font-family: var(--font-jost);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.rejectBtn:hover:not(:disabled) {
+  background: rgba(213, 84, 84, 0.12);
+}
+
+.rejectBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 900px) {
+  .page {
+    padding: 130px 20px 80px;
+    justify-content: flex-start;
+  }
+
+  .loginActions {
+    margin-top: 36px;
+  }
+
+  .card,
+  .formCard {
+    margin-top: 40px;
+  }
+
+  .cardHead {
+    /* Extra top padding so logout button doesn't overlap stamp row */
+    padding: 56px 24px 32px;
+  }
+
+  .cardBody {
+    padding: 28px 24px 32px;
+  }
+
+  .logout {
+    top: 14px;
+    right: 16px;
+    position: absolute;
+  }
+
+  .stamp {
+    width: 60px;
+    height: 60px;
+  }
+
+  .phoneRow .btnPrimary {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .staffPage {
+    padding-top: 130px;
+  }
+
+  .staffSection {
+    margin-top: 36px;
+  }
+
+  .requestItem {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px 20px;
+  }
+
+  .requestActions {
+    justify-content: stretch;
+  }
+
+  .requestActions button {
+    flex: 1;
+  }
+
+  .formCard {
+    padding: 28px 22px;
+  }
+
+  /* Customer Records: swap table for card list on mobile */
+  .tableWrapper {
+    display: none;
+  }
+
+  .userCardList {
+    display: flex;
+  }
+}
+
+/* ── Phone collection screen: pre-filled detail rows ─────────────── */
+.prefillRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0ede8;
+}
+
+.prefillRow:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.prefillLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9a8a7a;
+}
+
+.prefillValue {
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+  max-width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ── Customer Records Table ────────────────────────────────────────── */
+.tableWrapper {
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217, 167, 85, 0.4) transparent;
+}
+
+.tableWrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.tableWrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: rgba(217, 167, 85, 0.4);
+  border-radius: 3px;
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.usersTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--charcoal);
+  text-align: left;
+  padding: 12px 16px;
+  font-family: var(--font-jost);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.3);
+  white-space: nowrap;
+}
+
+.usersTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+  vertical-align: middle;
+  color: var(--cream);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.usersTable td.tdMuted {
+  color: rgba(240, 230, 210, 0.65);
+  font-size: 0.82rem;
+}
+
+.usersTable td.tdSubtle {
+  color: rgba(240, 230, 210, 0.45);
+  font-size: 0.78rem;
+}
+
+.usersTable tbody tr {
+  background: var(--charcoal);
+  transition: background 0.2s;
+}
+
+.usersTable tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.usersTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Remove white hover — use a subtle dark highlight instead */
+.usersTable tbody tr:hover td {
+  background: rgba(217, 167, 85, 0.07);
+}
+
+/* Mobile: card list instead of table — hidden on desktop via min-width query below */
+.userCardList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 460px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217, 167, 85, 0.4) transparent;
+}
+
+@media (min-width: 901px) {
+  .userCardList {
+    display: none;
+  }
+}
+
+.userCardList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.userCardList::-webkit-scrollbar-thumb {
+  background: rgba(217, 167, 85, 0.4);
+  border-radius: 2px;
+}
+
+.userCard {
+  background: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.userCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.userCardName {
+  font-family: var(--font-playfair);
+  font-size: 1rem;
+  color: var(--cream);
+}
+
+.userCardDetail {
+  font-size: 0.78rem;
+  color: rgba(240, 230, 210, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userCardDate {
+  font-size: 0.72rem;
+  color: rgba(240, 230, 210, 0.4);
+}
+
+.badgeGold {
+  background: rgba(201, 169, 110, 0.25);
+  color: var(--gold);
+  border: 1px solid rgba(201, 169, 110, 0.45);
+}

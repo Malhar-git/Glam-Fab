@@ -151,7 +151,6 @@ export default function Hero() {
                     preload="metadata"
                     aria-label={slide.alt}
                     className={styles.heroCarouselVideo}
-                    priority={index === 0}
                   />
                 ) : (
                   <Image
