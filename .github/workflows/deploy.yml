@@ -36,10 +36,25 @@ jobs:
       - name: Prepare Backend
         run: |
           cp -R backend ./out/backend
-          sed -i "s/glam_fab_rewards/${{ secrets.DB_NAME }}/" ./out/backend/db.php
-          sed -i "s/root/${{ secrets.DB_USER }}/" ./out/backend/db.php
-          sed -i "s/''/'${{ secrets.DB_PASS }}'/" ./out/backend/db.php
-          sed -i "s/GLAM_STAFF_PASS_PLACEHOLDER/${{ secrets.STAFF_PASS }}/" ./out/backend/*.php
+          sed -i "s|glam_fab_rewards|${{ secrets.DB_NAME }}|" ./out/backend/db.php
+          sed -i "s|\$user = 'root'|\$user = '${{ secrets.DB_USER }}'|" ./out/backend/db.php
+          sed -i "s|\$pass = ''|\$pass = '${{ secrets.DB_PASS }}'|" ./out/backend/db.php
+          sed -i "s|GLAM_STAFF_PASS_PLACEHOLDER|${{ secrets.STAFF_PASS }}|g" ./out/backend/*.php
+
+      - name: Verify backend substitutions
+        run: |
+          echo "=== db.php (credentials masked) ==="
+          grep -E "\\\$host|\\\$db|\\\$user|\\\$pass" ./out/backend/db.php | sed "s/'[^']*'/'***'/g"
+          echo ""
+          echo "=== Checking no GLAM_STAFF_PASS_PLACEHOLDER remains ==="
+          if grep -r "GLAM_STAFF_PASS_PLACEHOLDER" ./out/backend/; then
+            echo "ERROR: placeholder still found!"; exit 1
+          else
+            echo "OK: all placeholders replaced"
+          fi
+          echo ""
+          echo "=== backend files deployed ==="
+          ls ./out/backend/
 
       - name: Deploy via FTP to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
