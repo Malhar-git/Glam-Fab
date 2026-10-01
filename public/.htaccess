@@ -1,14 +1,18 @@
 Options -Indexes
 RewriteEngine On
 
-# Serve existing files and directories as-is (CSS, JS, images, PHP, etc.)
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# For clean URLs: try appending .html (e.g. /rewards -> rewards.html)
+# Priority 1: if a .html file exists for this clean URL, serve it FIRST
+# (must come before the directory check — rewards/ dir exists alongside rewards.html)
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
 RewriteRule ^(.+?)/?$ /$1.html [L]
 
-# Fallback to 404
+# Priority 2: serve actual files as-is (JS, CSS, images, PHP, etc.)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Priority 3: serve directories as-is (only if no same-named .html exists)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Fallback: 404
 RewriteRule ^ /404.html [L]
