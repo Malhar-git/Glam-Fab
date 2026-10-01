@@ -2,8 +2,8 @@ Options -Indexes
 RewriteEngine On
 
 # Priority 1: if a .html file exists for this clean URL, serve it FIRST
-# (must come before the directory check — rewards/ dir exists alongside rewards.html)
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+# Use REQUEST_FILENAME (no query string) not REQUEST_URI (includes ?scan=true etc.)
+RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+?)/?$ /$1.html [L]
 
 # Priority 2: serve actual files as-is (JS, CSS, images, PHP, etc.)
