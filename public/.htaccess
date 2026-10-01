@@ -1,0 +1,14 @@
+Options -Indexes
+RewriteEngine On
+
+# Serve existing files and directories as-is (CSS, JS, images, PHP, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# For clean URLs: try appending .html (e.g. /rewards -> rewards.html)
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+RewriteRule ^(.+?)/?$ /$1.html [L]
+
+# Fallback to 404
+RewriteRule ^ /404.html [L]
