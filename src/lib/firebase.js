@@ -10,6 +10,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "YOUR_APP_ID",
 };
 
+// Warn clearly when the config is missing (e.g. no .env.local for local dev,
+// or missing GitHub secrets during CI) instead of failing with a cryptic
+// Firebase "api-key-not-valid" error at sign-in time.
+if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+  console.warn(
+    "Firebase is not configured. Set NEXT_PUBLIC_FIREBASE_* variables in .env.local (see .env.local.example) and restart the dev server."
+  );
+}
+
 // Initialize Firebase only if it hasn't been initialized yet
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);

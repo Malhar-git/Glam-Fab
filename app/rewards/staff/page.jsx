@@ -6,8 +6,10 @@ import Footer from "@/components/Footer/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp/FloatingWhatsApp";
 import styles from "../rewards.module.css";
 
-// Use a relative path so it automatically works on the live Hostinger domain
-const API_URL = "/backend";
+// Relative path works on the live Hostinger domain. For local development
+// with the PHP backend on XAMPP/Apache (a different port than the Next dev
+// server), set NEXT_PUBLIC_API_URL in .env.local (e.g. http://localhost/backend).
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/backend";
 const STAFF_PASS = process.env.NEXT_PUBLIC_STAFF_PASS || "local_dev_pass";
 
 const timeAgo = (dateString) => {
@@ -25,6 +27,7 @@ export default function StaffPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pending, setPending] = useState([]);
   const [rewardReady, setRewardReady] = useState([]);
+  const [scratchCards, setScratchCards] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,6 +43,7 @@ export default function StaffPortal() {
       if (res.ok) {
         setPending(data.pending || []);
         setRewardReady(data.reward_ready || []);
+        setScratchCards(data.scratch_cards || []);
       } else {
         setStatus(data.error || "Failed to load requests.");
         setStatusType("error");
@@ -100,6 +104,7 @@ export default function StaffPortal() {
     setPassword("");
     setPending([]);
     setRewardReady([]);
+    setScratchCards([]);
     setStatus("");
   };
 
@@ -160,6 +165,26 @@ export default function StaffPortal() {
       const data = await res.json();
       setStatusType(res.ok ? "success" : "error");
       setStatus(res.ok ? "Reward redeemed ✓" : data.error || "Failed to redeem.");
+    } catch {
+      setStatusType("error");
+      setStatus("Could not reach the server.");
+    }
+    await loadRequests();
+    setBusyId(null);
+  };
+
+  const redeemScratch = async (cardId) => {
+    setBusyId(`scratch-${cardId}`);
+    setStatus("");
+    try {
+      const res = await fetch(`${API_URL}/redeem_scratch.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ staff_pass: STAFF_PASS, card_id: cardId }),
+      });
+      const data = await res.json();
+      setStatusType(res.ok ? "success" : "error");
+      setStatus(res.ok ? `Redeemed: ${data.reward || "reward"} ✓` : data.error || "Failed to redeem.");
     } catch {
       setStatusType("error");
       setStatus("Could not reach the server.");
@@ -268,6 +293,7 @@ export default function StaffPortal() {
                     </span>
                     <span className={styles.requestMeta}>
                       {r.stamps} / 3 stamps so far · {timeAgo(r.created_at)}
+                      {r.source === "review" ? " · ★ Google review — verify before approving" : ""}
                     </span>
                   </div>
                   <div className={styles.requestActions}>
@@ -284,6 +310,43 @@ export default function StaffPortal() {
                       disabled={busyId === r.id}
                     >
                       Reject
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* Scratch cards awaiting redemption */}
+        <section className={styles.staffSection}>
+          <h2 className={styles.sectionHead}>
+            Scratch Cards{" "}
+            {scratchCards.length > 0 && <span className={styles.badge}>{scratchCards.length}</span>}
+          </h2>
+          {scratchCards.length === 0 ? (
+            <p className={styles.empty}>No active scratch cards.</p>
+          ) : (
+            <ul className={styles.requestList}>
+              {scratchCards.map((c) => (
+                <li key={c.card_id} className={styles.requestItem}>
+                  <div className={styles.requestInfo}>
+                    <strong className={styles.customerName}>{c.name || "Guest"}</strong>
+                    <span className={styles.customerPhone}>
+                      {c.phone ? c.phone : "No phone on file"}
+                    </span>
+                    <span className={styles.requestMeta}>
+                      {c.status === "revealed" ? `Won: ${c.reward_label}` : "Not scratched yet"} · {timeAgo(c.created_at)}
+                    </span>
+                  </div>
+                  <div className={styles.requestActions}>
+                    <button
+                      className={styles.approveBtn}
+                      onClick={() => redeemScratch(c.card_id)}
+                      disabled={busyId === `scratch-${c.card_id}` || c.status !== "revealed"}
+                      title={c.status !== "revealed" ? "Ask the customer to scratch first" : "Redeem"}
+                    >
+                      {busyId === `scratch-${c.card_id}` ? "…" : "Redeem"}
                     </button>
                   </div>
                 </li>

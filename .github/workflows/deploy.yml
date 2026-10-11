@@ -36,9 +36,9 @@ jobs:
       - name: Prepare Backend
         run: |
           cp -R backend ./out/backend
-          sed -i "s|glam_fab_rewards|${{ secrets.DB_NAME }}|" ./out/backend/db.php
-          sed -i "s|\$user = 'root'|\$user = '${{ secrets.DB_USER }}'|" ./out/backend/db.php
-          sed -i "s|\$pass = ''|\$pass = '${{ secrets.DB_PASS }}'|" ./out/backend/db.php
+          sed -i "s|'glam_fab_rewards'|'${{ secrets.DB_NAME }}'|" ./out/backend/db.php
+          sed -i "s|?: 'root'|?: '${{ secrets.DB_USER }}'|" ./out/backend/db.php
+          sed -i "s|?: ''|?: '${{ secrets.DB_PASS }}'|" ./out/backend/db.php
           sed -i "s|GLAM_STAFF_PASS_PLACEHOLDER|${{ secrets.STAFF_PASS }}|g" ./out/backend/*.php
 
       - name: Verify backend substitutions

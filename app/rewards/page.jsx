@@ -9,9 +9,113 @@ import Footer from "@/components/Footer/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp/FloatingWhatsApp";
 import styles from "./rewards.module.css";
 
-// Use a relative path so it automatically works on the live Hostinger domain
-const API_URL = "/backend";
+// Relative path works on the live Hostinger domain. For local development
+// with the PHP backend on XAMPP/Apache (a different port than the Next dev
+// server), set NEXT_PUBLIC_API_URL in .env.local (e.g. http://localhost/backend).
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "/backend";
 const STAMPS_FOR_REWARD = 3;
+// TODO: replace with the salon's real Google review link (Maps Place ID URL).
+const GOOGLE_REVIEW_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
+  "https://www.google.com/maps/search/?api=1&query=Glam+and+Fab+Salon+Adoor";
+
+// Scratch-off overlay: gold cover the user wipes with a finger/mouse.
+// Calls onScratched() once ~45% is cleared. Purely cosmetic — the reward
+// is assigned server-side; this only triggers the reveal API call.
+function ScratchCover({ onScratched }) {
+  const canvasRef = useRef(null);
+  const doneRef = useRef(false);
+  const cellsRef = useRef(new Set());
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    const w = parent.clientWidth || 300;
+    const h = 170;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, "#c9a96e");
+    grad.addColorStop(0.5, "#e8cf9a");
+    grad.addColorStop(1, "#a8843f");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Soft diagonal shine band for a brushed-metal feel
+    const shine = ctx.createLinearGradient(0, 0, w, 0);
+    shine.addColorStop(0, "rgba(255,255,255,0)");
+    shine.addColorStop(0.5, "rgba(255,250,225,0.22)");
+    shine.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = shine;
+    ctx.fillRect(w * 0.2, 0, w * 0.2, h);
+
+    // Scattered sparkles so the cover reads as a prize card
+    ctx.fillStyle = "rgba(255,243,205,0.55)";
+    ctx.font = "10px Jost, sans-serif";
+    [
+      [0.12, 0.2], [0.86, 0.16], [0.2, 0.82], [0.88, 0.78],
+      [0.5, 0.1], [0.72, 0.9], [0.3, 0.36], [0.66, 0.62],
+    ].forEach(([sx, sy]) => ctx.fillText("✦", sx * w, sy * h));
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(20,14,8,0.6)";
+    ctx.font = "500 10px Jost, sans-serif";
+    ctx.fillText("G L A M  &  F A B  ·  S U R P R I S E", w / 2, h / 2 - 40);
+    ctx.fillStyle = "rgba(20,14,8,0.75)";
+    ctx.font = "600 13px Jost, sans-serif";
+    ctx.fillText("SCRATCH HERE  ✦", w / 2, h / 2 - 6);
+    ctx.font = "300 11px Jost, sans-serif";
+    ctx.fillText("use your finger or mouse", w / 2, h / 2 + 16);
+
+    const COLS = 10;
+    const ROWS = 6;
+    const erase = (clientX, clientY) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      const cx = Math.min(COLS - 1, Math.max(0, Math.floor((x / rect.width) * COLS)));
+      const cy = Math.min(ROWS - 1, Math.max(0, Math.floor((y / rect.height) * ROWS)));
+      cellsRef.current.add(`${cx}:${cy}`);
+      if (!doneRef.current && cellsRef.current.size / (COLS * ROWS) > 0.45) {
+        doneRef.current = true;
+        onScratched();
+      }
+    };
+    let drawing = false;
+    const down = (e) => {
+      drawing = true;
+      erase(e.clientX, e.clientY);
+    };
+    const move = (e) => {
+      if (drawing) erase(e.clientX, e.clientY);
+    };
+    const up = () => {
+      drawing = false;
+    };
+    canvas.addEventListener("pointerdown", down);
+    canvas.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    return () => {
+      canvas.removeEventListener("pointerdown", down);
+      canvas.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+  }, [onScratched]);
+
+  return <canvas ref={canvasRef} className={styles.scratchCanvas} />;
+}
 
 export default function RewardsPage() {
   const [user, setUser] = useState(null);
@@ -26,6 +130,12 @@ export default function RewardsPage() {
   const [notice, setNotice] = useState("");
   const [isScan, setIsScan] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [scratchCard, setScratchCard] = useState(null);
+  const [revealing, setRevealing] = useState(false);
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [claimingCard, setClaimingCard] = useState(false);
+  const [reviewAvailable, setReviewAvailable] = useState(false);
+  const [claimingReview, setClaimingReview] = useState(false);
   const requestedRef = useRef(false);
   const phonePromptRef = useRef(false);
 
@@ -72,6 +182,8 @@ export default function RewardsPage() {
         setStamps(data.stamps ?? 0);
         setPendingStamp(!!data.pending_stamp);
         setRewardReady(!!data.reward_ready);
+        setScratchCard(data.scratch_card || null);
+        setReviewAvailable(!!data.review_stamp_available);
         // Show phone collection modal if phone is not on file
         if (!data.user?.phone) {
           setShowPhoneModal(true);
@@ -103,6 +215,8 @@ export default function RewardsPage() {
     setStamps(0);
     setPendingStamp(false);
     setRewardReady(false);
+    setScratchCard(null);
+    setReviewAvailable(false);
     setNotice("");
   };
 
@@ -131,8 +245,77 @@ export default function RewardsPage() {
     setRequesting(false);
   }, [user]);
 
-  const handlePhoneSubmit = async (e) => {
-    e.preventDefault();
+  // Reveal the scratch card. The reward was fixed server-side at issue
+  // time; this just flips issued -> revealed and returns the label.
+  const revealScratch = useCallback(async () => {
+    if (!user || !scratchCard || revealing) return;
+    if (scratchCard.status === "revealed") return;
+    setRevealing(true);
+    try {
+      const res = await fetch(`${API_URL}/reveal_scratch.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: user.uid, card_id: scratchCard.id }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setScratchCard((c) => (c ? { ...c, status: "revealed", reward_label: data.reward } : c));
+        // Celebrate immediately — the reward label is now known.
+        setShowRewardModal(true);
+      } else {
+        setNotice(data.error || "Could not reveal the card. Please try again.");
+      }
+    } catch {
+      setNotice("Could not reach the server. Please try again.");
+    }
+    setRevealing(false);
+  }, [user, scratchCard, revealing]);
+
+  // Backfill for stamps earned before the scratch feature launched.
+  const claimScratchCard = async () => {
+    if (!user) return;
+    setClaimingCard(true);
+    try {
+      const res = await fetch(`${API_URL}/claim_scratch.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: user.uid }),
+      });
+      const data = await res.json();
+      if (!res.ok) setNotice(data.error || "Could not issue the card.");
+      await fetchUserData(user.uid);
+    } catch {
+      setNotice("Could not reach the server. Please try again.");
+    }
+    setClaimingCard(false);
+  };
+
+  // Google-review bonus: opens the review page, then queues a one-time
+  // pending stamp for staff verification.
+  const claimReviewStamp = async () => {
+    if (!user) return;
+    window.open(GOOGLE_REVIEW_URL, "_blank", "noopener,noreferrer");
+    setClaimingReview(true);
+    try {
+      const res = await fetch(`${API_URL}/request_review_stamp.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uid: user.uid }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setNotice(data.error || "Could not request the bonus stamp.");
+      } else {
+        setNotice("Review page opened! After posting, show it at the billing desk — your bonus stamp is queued for approval.");
+      }
+      await fetchUserData(user.uid);
+    } catch {
+      setNotice("Could not reach the server. Please try again.");
+    }
+    setClaimingReview(false);
+  };
+
+  const handlePhoneSubmit = async (e) => {    e.preventDefault();
     const cleaned = phone.trim();
     if (!cleaned) return;
     setSavingPhone(true);
@@ -388,12 +571,68 @@ export default function RewardsPage() {
               </div>
             )}
 
-            {rewardReady && (
+            {rewardReady && !scratchCard && (
               <div className={styles.rewardBanner}>
                 <div className={styles.rewardTitle}>Reward unlocked!</div>
                 <p className={styles.rewardText}>
-                  Show this screen at the billing desk to claim your surprise.
+                  You&apos;ve earned all 3 stamps. Generate your scratch card to reveal your surprise.
                 </p>
+                <button
+                  onClick={claimScratchCard}
+                  disabled={claimingCard}
+                  className={styles.btnPrimary}
+                  style={{ marginTop: "18px" }}
+                >
+                  {claimingCard ? "Issuing…" : "Get my scratch card →"}
+                </button>
+              </div>
+            )}
+
+            {rewardReady && scratchCard && scratchCard.status === "issued" && (
+              <div className={styles.scratchWrap}>
+                <div className={styles.rewardTitle}>Scratch your card!</div>
+                <p className={styles.rewardText}>
+                  Wipe the gold cover to reveal your surprise reward.
+                </p>
+                <div className={styles.scratchArea}>
+                  <div className={styles.scratchHidden}>
+                    <span className={styles.scratchHiddenMark}>?</span>
+                    <span className={styles.scratchHiddenCaption}>your surprise</span>
+                  </div>
+                  <ScratchCover onScratched={revealScratch} />
+                </div>
+                <button
+                  onClick={revealScratch}
+                  disabled={revealing}
+                  className={styles.scratchFallback}
+                >
+                  {revealing ? "Revealing…" : "Can’t scratch? Tap to reveal instead"}
+                </button>
+              </div>
+            )}
+
+            {rewardReady && scratchCard && scratchCard.status === "revealed" && (
+              <div className={styles.rewardBanner}>
+                <div className={styles.rewardTitle}>You won: {scratchCard.reward_label}!</div>
+                <p className={styles.rewardText}>
+                  Show this screen at the billing desk to claim it. Valid for 30 days.
+                </p>
+              </div>
+            )}
+
+            {/* Google-review bonus stamp (one per user, staff-verified) */}
+            {reviewAvailable && !pendingStamp && !rewardReady && (
+              <div className={styles.reviewCard}>
+                <p className={styles.phoneText}>
+                  <strong>Bonus stamp:</strong> leave us a Google review and earn an extra stamp toward your reward.
+                </p>
+                <button
+                  onClick={claimReviewStamp}
+                  disabled={claimingReview}
+                  className={styles.btnPrimary}
+                >
+                  {claimingReview ? "Saving…" : "Review us on Google →"}
+                </button>
               </div>
             )}
 
@@ -409,6 +648,56 @@ export default function RewardsPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Reward celebration popup ────────────────────────────────
+          Shown right after a successful scratch reveal. The reward was
+          decided server-side at issue time; this just presents it. */}
+      {showRewardModal && scratchCard?.status === "revealed" && (
+        <div
+          className={styles.rewardOverlay}
+          onClick={() => setShowRewardModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="You won a reward"
+        >
+          <div className={styles.rewardModal} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.rewardModalClose}
+              onClick={() => setShowRewardModal(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <div className={styles.confettiWrap} aria-hidden="true">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={styles.confetti}
+                  style={{
+                    left: `${(i * 53 + 5) % 100}%`,
+                    animationDelay: `${(i % 6) * 0.22}s`,
+                    background: ["var(--gold-light)", "var(--gold)", "#f7edd2"][i % 3],
+                    borderRadius: i % 2 ? "50%" : "1px",
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className={styles.rewardModalBadge}>✦</div>
+            <div className={styles.rewardModalEyebrow}>Congratulations, you won</div>
+            <div className={styles.rewardModalPrize}>{scratchCard.reward_label}</div>
+            <p className={styles.rewardModalNote}>
+              Show this screen at the billing desk to claim it. Valid for 30 days.
+            </p>
+            <button onClick={() => setShowRewardModal(false)} className={styles.btnPrimary}>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+      {/* ──────────────────────────────────────────────────────────── */}
+
       <Footer />
       <FloatingWhatsApp />
     </>

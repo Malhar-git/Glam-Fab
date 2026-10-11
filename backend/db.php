@@ -1,8 +1,11 @@
 <?php
-$host = 'localhost';
-$db   = 'glam_fab_rewards'; // Replace with Hostinger DB name in production
-$user = 'root'; // Replace with Hostinger DB User in production
-$pass = ''; // Replace with Hostinger DB Password in production
+// DB credentials come from environment in production (Hostinger hPanel
+// -> Advanced -> Environment Variables, or a non-committed .env loader).
+// Fallbacks keep local XAMPP development working.
+$host = getenv('GLAM_DB_HOST') ?: 'localhost';
+$db   = getenv('GLAM_DB_NAME') ?: 'glam_fab_rewards';
+$user = getenv('GLAM_DB_USER') ?: 'root';
+$pass = getenv('GLAM_DB_PASS') ?: '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

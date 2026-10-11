@@ -329,7 +329,12 @@
 .stampCountNum {
   font-family: var(--font-playfair);
   font-size: 3rem;
-  line-height: 1;
+  /* Room around the glyph so the gradient background (clipped to the text)
+     fully covers the digit — line-height:1 + background-clip:text was
+     cutting off the top/bottom of the number. */
+  line-height: 1.2;
+  display: inline-block;
+  padding: 0 0.1em 0.06em;
   background: linear-gradient(
     90deg,
     var(--gold-dark) 0%,
@@ -1078,4 +1083,244 @@ select.input option {
   background: rgba(201, 169, 110, 0.25);
   color: var(--gold);
   border: 1px solid rgba(201, 169, 110, 0.45);
+}
+
+/* ── Scratch card ─────────────────────────────────────────────── */
+.scratchWrap {
+  border: 1px solid var(--gold);
+  background: linear-gradient(120deg, rgba(217, 167, 85, 0.2), rgba(217, 167, 85, 0.06));
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.scratchArea {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  height: 170px;
+  margin: 20px auto 0;
+  background: var(--deep);
+  border: 1px dashed rgba(201, 169, 110, 0.5);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.scratchHidden {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: radial-gradient(circle at 50% 42%, rgba(217, 167, 85, 0.16), transparent 72%);
+}
+
+.scratchHiddenMark {
+  font-family: var(--font-playfair);
+  font-size: 3.4rem;
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 26px rgba(217, 167, 85, 0.45);
+}
+
+.scratchHiddenCaption {
+  font-size: 0.64rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.scratchCanvas {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+}
+
+.scratchFallback {
+  margin-top: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-jost);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.scratchFallback:hover:not(:disabled) {
+  color: var(--gold);
+}
+
+/* ── Google-review bonus ──────────────────────────────────────── */
+.reviewCard {
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  background: rgba(217, 167, 85, 0.05);
+  padding: 24px;
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+/* ── Reward celebration popup ─────────────────────────────────── */
+.rewardOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 6, 3, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+  animation: overlayFade 0.25s ease both;
+}
+
+.rewardModal {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.45);
+  padding: 56px 32px 40px;
+  text-align: center;
+  overflow: hidden;
+  animation: modalPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.rewardModal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.rewardModalClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  color: var(--text-muted);
+  font-family: var(--font-jost);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.rewardModalClose:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Falling confetti pieces (position/delay/colour set inline per piece) */
+.confettiWrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  top: -16px;
+  width: 7px;
+  height: 12px;
+  opacity: 0;
+  animation: confettiFall 2.8s ease-in forwards;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(320px) rotate(520deg); opacity: 0; }
+}
+
+.rewardModalBadge {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: rgba(217, 167, 85, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--gold);
+  animation: badgeGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 14px rgba(217, 167, 85, 0.25); }
+  50%      { box-shadow: 0 0 34px rgba(217, 167, 85, 0.5); }
+}
+
+.rewardModalEyebrow {
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.rewardModalPrize {
+  font-family: var(--font-playfair);
+  font-style: italic;
+  font-size: clamp(1.7rem, 6vw, 2.3rem);
+  line-height: 1.25;
+  padding: 0 0.2em 0.06em;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    var(--gold-dark) 0%,
+    var(--gold-light) 25%,
+    var(--gold) 50%,
+    var(--gold-light) 75%,
+    var(--gold-dark) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5s linear infinite;
+  margin-bottom: 18px;
+}
+
+.rewardModalNote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 26px;
+}
+
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (max-width: 900px) {
+  .rewardModal {
+    padding: 48px 24px 32px;
+  }
 }
